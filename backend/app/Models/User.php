@@ -56,8 +56,8 @@ class User extends Authenticatable implements JWTSubject{
         return [];
     }
 
-    public function tags()
+    public function files()
 {
-    return $this->belongsToMany(Files::class)->withPivot('role');
+    return $this->belongsToMany(File::class)->withPivot('role');
 }
 }

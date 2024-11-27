@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Files extends Model
+class File extends Model
 {
 
     protected $fillable = [
@@ -12,7 +12,7 @@ class Files extends Model
     ];
     
 
-    public function posts()
+    public function users()
 {
     return $this->belongsToMany(User::class)->withPivot('role');
 }
