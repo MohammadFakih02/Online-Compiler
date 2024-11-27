@@ -6,6 +6,8 @@ use App\Models\File;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 class OwnerController extends Controller
 {
     public function invite(Request $request)
@@ -16,7 +18,6 @@ class OwnerController extends Controller
     {
         //
     }
-
 
 
     public function updateRole(Request $request, $fileId, $userId)
@@ -41,7 +42,6 @@ class OwnerController extends Controller
         $existingRole->pivot->role = $request->input('role');
         $existingRole->pivot->save();
 
-        // 6. Return success response
         return response()->json(['message' => 'Role updated successfully']);
     }
 
