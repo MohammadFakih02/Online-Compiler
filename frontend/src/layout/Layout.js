@@ -2,6 +2,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../pages/Navbar";
+import Sidebar from "../pages/Sidebar";
 
 
 const Layout = () => {
@@ -10,14 +11,12 @@ const Layout = () => {
             <Navbar />
             {/* <div className="main"> */}
                 <div className="main">
-                    <div className="Sidebar">
-                        <p>sidebar</p>
-                    </div>
+                    <Sidebar />
                     {/* The Outlet will render the content of the current route */}
                     <div className="editorWrapper">
                         <div className="editor">
 
-                            <h1>React Code Editor</h1>
+                            
                             <Outlet />
 
                             <button>Run</button>
@@ -35,3 +34,5 @@ const Layout = () => {
 };
 
 export default Layout;
+
+
