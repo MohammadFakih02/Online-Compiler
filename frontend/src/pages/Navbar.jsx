@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { logOut } from "../router/Logout.js";
 import shareIcon from '../images/share.png';
 
-
 function Navbar() {
     const { language, theme, handleLanguageChange, handleThemeChange, logged_in } = useContext(AppContext);
 
@@ -20,10 +19,39 @@ function Navbar() {
         setIsPopupVisible(false);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        alert(`Name: ${name}, Email: ${email}`);
-        closePopup(); 
+
+        // Define the data to send to the API
+        const data = {
+            name: name,
+            email: email
+        };
+
+        try {
+            // Sending the data to the API using fetch
+            const response = await fetch('http://localhost:8000/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Handle successful submission, for example, close the popup
+                alert('Details sent successfully');
+                closePopup();
+            } else {
+                // Handle error response from the API
+                alert(`Error: ${result.error || 'Something went wrong'}`);
+            }
+        } catch (error) {
+            console.error("Error submitting details:", error);
+            alert("Error submitting details");
+        }
     };
 
     return (
