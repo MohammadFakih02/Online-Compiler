@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class FileController extends Controller
@@ -38,4 +39,42 @@ class FileController extends Controller
 
         return response()->json(['token' => $token]);
     }
+
+    public function saveFile(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string',
+        ]);
+    
+        $filePath = 'code.txt';
+    
+        if (Storage::disk('public')->put($filePath, $request->content)) {
+            $url = Storage::url($filePath);
+            return response()->json([
+                'message' => 'File saved successfully!',
+                'url' => $url,
+            ], 200);
+        } else {
+            return response()->json(['message' => 'Failed to save file.'], 500);
+        }
+    }
+    
+    public function fetchFile()
+{
+    $filePath = 'code.txt';
+    $disk = Storage::disk('public');
+
+    if ($disk->exists($filePath)) {
+        $content = $disk->get($filePath);
+        return response()->json([
+            'message' => 'File found!',
+            'content' => $content,
+        ], 200);
+    } else {
+        return response()->json([
+            'message' => 'File not found.',
+        ], 404);
+    }
+}
+
 }

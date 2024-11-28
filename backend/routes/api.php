@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\JWTAuthController;
 use App\Http\Controllers\OwnerController;
 use Illuminate\Http\Request;
@@ -11,7 +12,4 @@ use App\Http\Controllers\CodeFeedbackController;
 Route::post("/register", [JWTAuthController::class, "register"]);
 Route::post("/login", [JWTAuthController::class, "login"]);
 
-
-
-Route::post('/send-email', [EmailController::class, 'sendEmail']);
-Route::post('/submit-code', [CodeFeedbackController::class, 'submitCode']);
+Route::post("/upload", [FileController::class,"saveFile"]);
