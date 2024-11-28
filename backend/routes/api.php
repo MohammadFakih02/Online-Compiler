@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\JWTAuthController;
 use App\Http\Controllers\OwnerController;
 use Illuminate\Http\Request;
@@ -9,3 +10,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::post("/register", [JWTAuthController::class, "register"]);
 Route::post("/login", [JWTAuthController::class, "login"]);
+
+Route::post("/upload", [FileController::class,"saveFile"]);
