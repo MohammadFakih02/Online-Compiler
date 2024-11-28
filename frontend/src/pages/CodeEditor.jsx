@@ -4,26 +4,29 @@ import { Editor } from "@monaco-editor/react";
 import io from "socket.io-client";
 import { useLocation } from "react-router-dom";
 
-let socket; // Global socket instance
+let socket;
 
 const CodeEditor = () => {
   const { code, setCode, language, theme } = useContext(AppContext);
   const [content, setContent] = useState(code);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
-  const location = useLocation(); // Get current URL
+  const location = useLocation();
   const filetoken = localStorage.getItem("FileToken");
+
+  // Sync content state with code from AppContext
+  useEffect(() => {
+    setContent(code);
+  }, [code]);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const isInvite = queryParams.get("invite") === "true";
 
     if (isInvite || filetoken) {
-      // Initialize WebSocket connection
       socket = io("http://localhost:5000", {
         auth: { token: filetoken },
       });
 
-      // Listen for content updates
       socket.on("updateContent", (updatedContent) => {
         setContent(updatedContent);
         setCode(updatedContent);
@@ -44,9 +47,8 @@ const CodeEditor = () => {
     setContent(updatedContent);
     setCode(updatedContent);
 
-    // Emit changes to the server
     if (socket && isSocketConnected) {
-      socket.emit("edit", updatedContent); // Match the backend event name
+      socket.emit("edit", updatedContent);
     }
   };
 
@@ -71,7 +73,9 @@ const CodeEditor = () => {
         height="50vh"
       />
       {isSocketConnected && (
-        <button onClick={handleDisconnectSocket}>Disconnect WebSocket</button>
+        <button onClick={handleDisconnectSocket}>
+          Disconnect WebSocket
+        </button>
       )}
     </div>
   );
