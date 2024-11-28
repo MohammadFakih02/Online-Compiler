@@ -1,19 +1,22 @@
 // Layout.jsx
-import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../pages/Navbar";
 import Sidebar from "../pages/Sidebar";
 import { AppContext } from "../context/AppContext";
+import React, { useContext } from "react";
+
 
 
 const Layout = () => {
-    const { code, setCode, output, language, theme, executeCode } = useContext(AppContext);
+    const { code, setCode, output, language, theme, executeCode, logged_in } = useContext(AppContext);
     return (
         <div className="wrapper">
             <Navbar />
             {/* <div className="main"> */}
                 <div className="main">
-                    <Sidebar />
+                { logged_in ? (
+                        <Sidebar />
+                    ):<></>};
                     {/* The Outlet will render the content of the current route */}
                     <div className="editorWrapper">
                         <div className="editor">
@@ -21,7 +24,7 @@ const Layout = () => {
                             
                             <Outlet />
 
-                            <button>Run</button>
+                            <button onClick={executeCode}>Run</button>
 
                         </div>
                         <div className="output">

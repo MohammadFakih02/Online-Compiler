@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Hello,{{$name}}</h1>
-    <p>I’ve shared a file titled with you and would love your input. You can access it here:<a href="http://localhost:3000/"> Collaborate </a>.
+    <p>I’ve shared a file titled with you and would love your input. You can access it here:<a href="http://localhost:3000/?invite=true"> Collaborate </a>.
         <br>Please feel free to review, edit, or share feedback.<br>
          Let me know if you have any issues accessing the file.
         <br>

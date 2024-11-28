@@ -109,7 +109,10 @@ const CodeEditor = () => {
         value={content} // Use local state to control the editor
         language={language}
         theme={theme}
-        onChange={(updatedContent) => { setContent(updatedContent) }} // Directly handle editor changes
+        onChange={(updatedContent) => {
+          setContent(updatedContent); 
+          setCode(updatedContent); 
+      }}
         options={{
           selectOnLineNumbers: true,
           automaticLayout: true,

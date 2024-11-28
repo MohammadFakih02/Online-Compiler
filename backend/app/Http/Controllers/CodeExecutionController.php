@@ -16,8 +16,8 @@ class CodeExecutionController extends Controller
         try {
             // Map language to command
             $command = match ($language) {
-                'javascript' => ['node', '-e', $code],
-                'python' => ['python', '-c', $code],
+                'javascript' => ['C:\\Program Files\\nodejs\\node.exe', '-e', $code],
+                'python' => ['C:\\Users\\moudi\\AppData\\Local\\Programs\\Python\\Python313\\python.exe', '-c', $code],
                 'csharp' => ['dotnet-script', $code],
                 default => throw new \Exception("Unsupported language"),
             };

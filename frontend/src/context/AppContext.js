@@ -40,28 +40,29 @@ export default function AppProvider({ children }) {
 
     // Execute the code by making an API call to execute it on the server
     const executeCode = async () => {
+        console.log("Executing code:", code);  // Log the code to check the value
         try {
-            const response = await fetch("http://localhost/api/execute-code", {
+            const response = await fetch("http://127.0.0.1:8000/api/execute-code", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,  // Corrected authorization header
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ language, code }),  // Send code and language
+                body: JSON.stringify({ language, code }),
             });
-
+    
             const data = await response.json();
-
-            // Handle the response based on success or error
+            console.log(data); // Log the response to see what the backend returns
             if (data.success) {
                 setOutput(data.output);  // Display the result of code execution
             } else {
                 setOutput(`Error: ${data.error}`);  // Handle error case
             }
         } catch (error) {
-            setOutput(`Error: ${error.message}`);  // Catch and display any network errors
+            setOutput(`Error: ${error.message}`);
         }
     };
+    
 
     return (
         <AppContext.Provider

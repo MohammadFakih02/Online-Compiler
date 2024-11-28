@@ -16,3 +16,7 @@ Route::post("/login", [JWTAuthController::class, "login"]);
 Route::post("/upload", [FileController::class,"saveFile"]);
 
 Route::post('/execute-code', [CodeExecutionController::class,'execute']);
+Route::post('submit-code', [CodeFeedbackController::class,'submitcode']);
+Route::post('send-email', [EmailController::class,'sendEmail']);
+
+
