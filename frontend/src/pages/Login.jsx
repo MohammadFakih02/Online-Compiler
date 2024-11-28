@@ -5,7 +5,7 @@ import axios from 'axios';
 
 
 const Login = () => {
-  const [username, setUsername] = useState(""); // State for username
+  const [email, setemail] = useState(""); // State for email
   const [password, setPassword] = useState(""); // State for password
   const { login, loading, error } = useLogin(); // Use the custom hook
   const navigate = useNavigate(); // useNavigate for navigation
@@ -15,7 +15,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const result = await login(username, password); // Pass username and password
+    const result = await login(email, password); // Pass email and password
 
     if (result.success) {
       // Redirect to dashboard on successful login
@@ -37,11 +37,11 @@ const Login = () => {
         <h2>Login</h2>
         <form onSubmit={handleLogin}>
           <div>
-            <label>Username:</label>
+            <label>email:</label>
             <input
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setemail(e.target.value)}
               required
             />
           </div>

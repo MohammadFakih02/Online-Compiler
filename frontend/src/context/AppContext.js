@@ -10,7 +10,7 @@ export default function AppProvider({ children }) {
     const [output, setOutput] = useState("");
     const [language, setLanguage] = useState("javascript");
     const [theme, setTheme] = useState("vs-dark");
-    const { token, logged_in, user_id, username, user_type } = useAuth()
+    const { token, logged_in, user_id, name } = useAuth()
 
     const handleLanguageChange = (e) => {
         const newLanguage = e.target.value;
