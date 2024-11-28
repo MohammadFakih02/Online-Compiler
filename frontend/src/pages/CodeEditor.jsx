@@ -10,6 +10,7 @@ const CodeEditor = () => {
   const { code, setCode, language, theme } = useContext(AppContext);
   const [content, setContent] = useState(code);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
+  const [isWebSocketEnabled, setWebSocketEnabled] = useState(false);
   const location = useLocation();
   const filetoken = localStorage.getItem("FileToken");
 
@@ -18,11 +19,12 @@ const CodeEditor = () => {
     setContent(code);
   }, [code]);
 
+  // Handle WebSocket initialization and cleanup
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const isInvite = queryParams.get("invite") === "true";
 
-    if (isInvite || filetoken) {
+    if (isWebSocketEnabled && (isInvite || filetoken)) {
       socket = io("http://localhost:5000", {
         auth: { token: filetoken },
       });
@@ -41,7 +43,7 @@ const CodeEditor = () => {
         setIsSocketConnected(false);
       }
     };
-  }, [filetoken, location.search, setCode]);
+  }, [filetoken, location.search, isWebSocketEnabled, setCode]);
 
   const handleEditorChange = (updatedContent) => {
     setContent(updatedContent);
@@ -52,11 +54,14 @@ const CodeEditor = () => {
     }
   };
 
-  const handleDisconnectSocket = () => {
-    if (socket) {
-      socket.disconnect();
-      setIsSocketConnected(false);
+  const toggleWebSocket = () => {
+    if (isWebSocketEnabled) {
+      if (socket) {
+        socket.disconnect();
+        setIsSocketConnected(false);
+      }
     }
+    setWebSocketEnabled(!isWebSocketEnabled);
   };
 
   return (
@@ -72,11 +77,9 @@ const CodeEditor = () => {
         }}
         height="50vh"
       />
-      {isSocketConnected && (
-        <button onClick={handleDisconnectSocket}>
-          Disconnect WebSocket
-        </button>
-      )}
+      <button onClick={toggleWebSocket}>
+        {isWebSocketEnabled ? "Disable Sync" : "Enable Sync"}
+      </button>
     </div>
   );
 };

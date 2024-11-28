@@ -16,7 +16,7 @@ const Layout = () => {
                 <div className="main">
                 { logged_in ? (
                         <Sidebar />
-                    ):<></>};
+                    ):<></>}
                     {/* The Outlet will render the content of the current route */}
                     <div className="editorWrapper">
                         <div className="editor">
