@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { AppContext } from "../context/AppContext.js";
 import { Link } from "react-router-dom";
 import { logOut } from "../router/Logout.js";
+import shareIcon from '../images/share.png';
 
 
 function Navbar() {
@@ -39,7 +40,16 @@ function Navbar() {
                         </Link>
                     </div>
                 ) : (
-                    <button className="logout-button" onClick={logOut}> Logout</button>
+                    <>
+                        <div className="logout-container">
+                            <img
+                                src={shareIcon}
+                                alt="Share Icon"
+                                style={{ width: "20px", height: "20px",cursor: 'pointer' }}
+                            />
+                            <button className="logout-button" onClick={logOut}>Logout</button>
+                        </div>
+                    </>
                 )
             }
         </div>
