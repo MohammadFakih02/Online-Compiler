@@ -18,6 +18,14 @@ const io = socketIo(server, {
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
+  const isInvitedUser = socket.handshake.query.invite === 'true';
+
+  if (isInvitedUser) {
+    console.log(`Invited user: ${socket.id}`);
+  } else {
+    console.log(`Non-invited user: ${socket.id}`);
+  }
+
   socket.on("edit", (content) => {
     console.log(`Content received from ${socket.id}:`, content);
     socket.broadcast.emit("updateContent", content);
