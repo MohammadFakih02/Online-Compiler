@@ -7,7 +7,7 @@ const useSignup = () => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
-    const signup = async (username, email, password) => {
+    const signup = async (name, email, password) => {
         setLoading(true);
         setError(null);
         setSuccess(false);
@@ -15,7 +15,7 @@ const useSignup = () => {
         try {
             const response = await axios.post(
                 "http://localhost:8000/api/register", // Replace with your PHP endpoint URL
-                { username, email, password },
+                { name, email, password },
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -23,7 +23,6 @@ const useSignup = () => {
                 }
             );
 
-            if (response.data.success) {
                 const receivedToken = response.data.token;
 
                 // Store the token in localStorage for persistent login
@@ -31,10 +30,6 @@ const useSignup = () => {
 
                 setToken(receivedToken);
                 return { success: true, token: receivedToken };
-            } else {
-                setError(response.data.message || 'Signup failed');
-                return { success: false, message: response.data.message || 'Signup failed' };
-            }
         } catch (err) {
             setError(err.message || "An unexpected error occurred");
             return { success: false, message: err.message || "An unexpected error occurred" };
