@@ -3,9 +3,11 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../pages/Navbar";
 import Sidebar from "../pages/Sidebar";
+import { AppContext } from "../context/AppContext";
 
 
 const Layout = () => {
+    const { code, setCode, output, language, theme, executeCode } = useContext(AppContext);
     return (
         <div className="wrapper">
             <Navbar />
@@ -24,7 +26,7 @@ const Layout = () => {
                         </div>
                         <div className="output">
                             <h2>Output:</h2>
-                            <pre>{/* Output can be displayed here */}</pre>
+                            <pre>{output}</pre>
                         </div>
                     </div>
                 </div>

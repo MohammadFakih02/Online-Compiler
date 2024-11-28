@@ -2,34 +2,53 @@ import React, { useState, useEffect, useContext } from "react";
 import { AppContext } from "../context/AppContext.js";
 import { Editor } from "@monaco-editor/react";
 import io from "socket.io-client";
+import { useLocation } from 'react-router-dom'; // Use react-router-dom to handle URL queries
 
 let socket; // Declare the socket outside to avoid reinitialization
 
 const CodeEditor = () => {
-  const { code, setCode, language, theme } = useContext(AppContext);
+  const { code, setCode, output, language, theme, executeCode } = useContext(AppContext);
   const [content, setContent] = useState(code); // Initialize with current code
   const [isLoading, setIsLoading] = useState(false); // Loading state for API
+  const [isSocketConnected, setIsSocketConnected] = useState(false); // Track socket connection status
+  const [isInvitedUser, setIsInvitedUser] = useState(false); // Track if the user is invited
 
+  const location = useLocation(); // Access the current URL
   const filetoken = localStorage.getItem("FileToken");
 
-  // Initialize socket only once
   useEffect(() => {
-    socket = io("http://localhost:5000", {
-      auth: { token: filetoken },
-    });
+    // Check if the user joined via invite link (i.e., the URL contains ?invite=true)
+    const queryParams = new URLSearchParams(location.search);
+    const inviteParam = queryParams.get('invite');
 
-    // Listen for updates from the server
-    socket.on("updateContent", (updatedContent) => {
-      setContent(updatedContent);
-      setCode(updatedContent); // Sync AppContext code
-    });
+    if (inviteParam === 'true') {
+      setIsInvitedUser(true);
+      socket = io("http://localhost:5000", {
+        auth: { token: filetoken },
+        query: { invite: 'true' }, // Send invite query to the server
+      });
 
-    // Cleanup on component unmount
+      // Listen for updates from the server
+      socket.on("updateContent", (updatedContent) => {
+        setContent(updatedContent);
+        setCode(updatedContent); // Sync AppContext code
+      });
+
+      setIsSocketConnected(true);
+    } else {
+      setIsInvitedUser(false);
+      setIsSocketConnected(false);
+    }
+
+    // Cleanup on component unmount or when invite link status changes
     return () => {
-      socket.off("updateContent");
-      socket.disconnect();
+      if (socket) {
+        socket.off("updateContent");
+        socket.disconnect();
+        setIsSocketConnected(false);
+      }
     };
-  }, [filetoken, setCode]); // Dependencies to ensure proper reinitialization
+  }, [filetoken, location.search, setCode]);
 
   // Function to handle API call
   const handleAnalyzeCode = () => {
@@ -76,15 +95,21 @@ const CodeEditor = () => {
       });
   };
 
+  // Function to disconnect the socket manually
+  const handleDisconnectSocket = () => {
+    if (socket) {
+      socket.disconnect(); // Manually disconnect WebSocket
+      setIsSocketConnected(false);
+    }
+  };
+
   return (
     <div>
       <Editor
         value={content} // Use local state to control the editor
         language={language}
         theme={theme}
-        onChange={(updatedContent) => {setContent(updatedContent)
-
-        }} // Directly handle editor changes
+        onChange={(updatedContent) => { setContent(updatedContent) }} // Directly handle editor changes
         options={{
           selectOnLineNumbers: true,
           automaticLayout: true,
@@ -96,6 +121,13 @@ const CodeEditor = () => {
       <button onClick={handleAnalyzeCode} disabled={isLoading}>
         {isLoading ? "Analyzing..." : "Analyze Code"}
       </button>
+
+      {/* Show disconnect button if WebSocket is enabled */}
+      {isSocketConnected && isInvitedUser && (
+        <button onClick={handleDisconnectSocket}>
+          Disconnect WebSocket
+        </button>
+      )}
     </div>
   );
 };

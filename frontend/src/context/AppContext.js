@@ -10,8 +10,9 @@ export default function AppProvider({ children }) {
     const [output, setOutput] = useState("");
     const [language, setLanguage] = useState("javascript");
     const [theme, setTheme] = useState("vs-dark");
-    const { token, logged_in, user_id, name } = useAuth()
+    const { token, logged_in, user_id, name } = useAuth();
 
+    // Handle Language Change and Default Code
     const handleLanguageChange = (e) => {
         const newLanguage = e.target.value;
         setLanguage(newLanguage);
@@ -32,8 +33,34 @@ export default function AppProvider({ children }) {
         }
     };
 
+    // Handle Theme Change
     const handleThemeChange = (e) => {
         setTheme(e.target.value);
+    };
+
+    // Execute the code by making an API call to execute it on the server
+    const executeCode = async () => {
+        try {
+            const response = await fetch("http://localhost/api/execute-code", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,  // Corrected authorization header
+                },
+                body: JSON.stringify({ language, code }),  // Send code and language
+            });
+
+            const data = await response.json();
+
+            // Handle the response based on success or error
+            if (data.success) {
+                setOutput(data.output);  // Display the result of code execution
+            } else {
+                setOutput(`Error: ${data.error}`);  // Handle error case
+            }
+        } catch (error) {
+            setOutput(`Error: ${error.message}`);  // Catch and display any network errors
+        }
     };
 
     return (
@@ -47,11 +74,12 @@ export default function AppProvider({ children }) {
                 theme,
                 handleLanguageChange,
                 handleThemeChange,
+                executeCode,
                 token,
-                logged_in
+                logged_in,
             }}
         >
             {children}
         </AppContext.Provider>
     );
-};
+}
